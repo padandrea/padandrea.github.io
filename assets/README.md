@@ -1,0 +1,1 @@
+# Site assets\n\nUpload the profile photograph used on the homepage here as `profile.png`.\n
