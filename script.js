@@ -1,44 +1,46 @@
 const root = document.documentElement;
-const toggle = document.querySelector(".theme-toggle");
-const tabs = [...document.querySelectorAll(".tab")];
+const themeToggle = document.querySelector(".theme-toggle");
+const navItems = [...document.querySelectorAll(".main-nav a")];
 const sections = [...document.querySelectorAll("main section")];
 
 const savedTheme = localStorage.getItem("theme");
-const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-if (savedTheme === "dark" || (!savedTheme && systemDark)) {
+if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
   root.dataset.theme = "dark";
 }
 
-function updateThemeColor() {
-  const color = getComputedStyle(root).getPropertyValue("--bg").trim();
-  document.querySelector('meta[name="theme-color"]').setAttribute("content", color);
+function syncThemeColor() {
+  const bg = getComputedStyle(root).getPropertyValue("--bg").trim();
+  document.querySelector('meta[name="theme-color"]').setAttribute("content", bg);
 }
 
-updateThemeColor();
+syncThemeColor();
 
-toggle.addEventListener("click", () => {
-  const next = root.dataset.theme === "dark" ? "light" : "dark";
-  root.dataset.theme = next;
-  localStorage.setItem("theme", next);
-  updateThemeColor();
+themeToggle.addEventListener("click", () => {
+  root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+  localStorage.setItem("theme", root.dataset.theme);
+  syncThemeColor();
 });
 
 const observer = new IntersectionObserver(
   entries => {
-    const visible = entries
+    const active = entries
       .filter(entry => entry.isIntersecting)
       .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
-    if (!visible) return;
+    if (!active) return;
 
-    tabs.forEach(tab => {
-      tab.classList.toggle("active", tab.getAttribute("href") === "#" + visible.target.id);
+    navItems.forEach(link => {
+      const selected = link.getAttribute("href") === "#" + active.target.id;
+      link.classList.toggle("active", selected);
+      link.classList.toggle("nav-pill", selected);
+      link.classList.toggle("nav-link", !selected);
     });
   },
   {
-    rootMargin: "-20% 0px -55% 0px",
-    threshold: [0.05, 0.25, 0.5]
+    rootMargin: "-22% 0px -58% 0px",
+    threshold: [0.05, 0.2, 0.5]
   }
 );
 
