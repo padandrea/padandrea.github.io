@@ -455,6 +455,10 @@ html[data-theme="dark"] .hero-dark {
   margin-bottom: 28px;
 }
 
+.about-section-header {
+  margin-top: 40px;
+}
+
 .section-header h2 {
   font-size: clamp(2.2rem, 4vw, 3.35rem);
 }
