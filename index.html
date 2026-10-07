@@ -6,7 +6,7 @@
   <meta name="description" content="Pascal S. D'Andrea — MSc Physics student at ETH Zürich working on exoplanets, nulling interferometry, and mission-yield simulations.">
   <meta name="theme-color" content="#ffffff">
   <title>Pascal S. D'Andrea</title>
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
   <header class="profile-header" id="top">
@@ -14,11 +14,16 @@
 
     <div class="portrait-ring">
       <img
-        class="portrait"
+        class="portrait portrait-light"
         src="assets/images/theme/profile_light.png"
-        data-light-src="assets/images/theme/profile_light.png"
-        data-dark-src="assets/images/theme/profile_dark.png"
         alt="Pascal S. D'Andrea"
+        onerror="this.onerror=null;this.src='https://avatars.githubusercontent.com/u/145207855?v=4';"
+      >
+      <img
+        class="portrait portrait-dark"
+        src="assets/images/theme/profile_dark.png"
+        alt=""
+        aria-hidden="true"
         onerror="this.onerror=null;this.src='https://avatars.githubusercontent.com/u/145207855?v=4';"
       >
     </div>
@@ -39,7 +44,8 @@
     </div>
 
     <nav class="main-nav" aria-label="Main navigation">
-      <a class="nav-pill active" href="#about">About</a>
+      <span class="nav-indicator" aria-hidden="true"></span>
+      <a class="nav-link active" href="#about">About</a>
       <a class="nav-link" href="#research">Research</a>
       <a class="nav-link" href="#publications">Publications</a>
       <a class="nav-link" href="#code">Code</a>
@@ -166,6 +172,6 @@
     <a href="#top">Back to top</a>
   </footer>
 
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>
