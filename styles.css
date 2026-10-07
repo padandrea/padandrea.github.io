@@ -230,47 +230,18 @@ html[data-theme="dark"] .sun-icon {
 }
 
 .main-nav {
-  --indicator-x: 6px;
-  --indicator-width: 100px;
-  position: relative;
   width: min(var(--content), calc(100% - 32px));
   margin: 38px auto 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4px;
+  gap: 10px;
   padding: 6px;
-  border: 1px solid var(--glass-border);
   border-radius: 999px;
-  background: var(--glass-bg);
-  box-shadow: var(--glass-shadow);
-  -webkit-backdrop-filter: blur(22px) saturate(165%);
-  backdrop-filter: blur(22px) saturate(165%);
-  transition:
-    background-color .38s ease,
-    border-color .38s ease,
-    box-shadow .38s ease;
-  isolation: isolate;
-}
-
-.nav-indicator {
-  position: absolute;
-  top: 6px;
-  left: 0;
-  width: var(--indicator-width);
-  height: 50px;
-  border-radius: 999px;
-  background: var(--indicator-bg);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .28),
-    0 5px 18px rgba(55, 102, 221, .20);
-  transform: translate3d(var(--indicator-x), 0, 0);
-  transition:
-    transform .38s cubic-bezier(.2, .8, .2, 1),
-    width .38s cubic-bezier(.2, .8, .2, 1),
-    background-color .38s ease;
-  pointer-events: none;
-  z-index: -1;
+  background: color-mix(in srgb, var(--glass-bg) 70%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  transition: background-color .38s ease;
 }
 
 .nav-link {
@@ -287,17 +258,32 @@ html[data-theme="dark"] .sun-icon {
   text-decoration: none;
   white-space: nowrap;
   transition:
-    color .25s ease,
-    transform .2s ease;
+    color .22s ease,
+    background-color .22s ease,
+    transform .2s ease,
+    box-shadow .22s ease;
 }
 
 .nav-link:hover,
 .nav-link:focus-visible {
   color: var(--text);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  transform: translateY(-1px);
 }
 
-.nav-link.indicator-current {
+.nav-link.active {
   color: #ffffff;
+  background: var(--accent);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    0 5px 16px rgba(55,102,221,.18);
+}
+
+.nav-link.active:hover,
+.nav-link.active:focus-visible {
+  color: #ffffff;
+  background: var(--accent);
+  transform: translateY(-1px);
 }
 
 .page-shell {
@@ -580,9 +566,6 @@ html.motion-ready .section.revealed {
     font-size: .94rem;
   }
 
-  .nav-indicator {
-    height: 46px;
-  }
 
   .section {
     padding: 46px 0 52px;

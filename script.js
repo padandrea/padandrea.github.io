@@ -1,7 +1,5 @@
 const root = document.documentElement;
 const themeToggle = document.querySelector(".theme-toggle");
-const mainNav = document.querySelector(".main-nav");
-const navIndicator = document.querySelector(".nav-indicator");
 const portraitRing = document.querySelector(".portrait-ring");
 const navItems = [...document.querySelectorAll(".main-nav a")];
 const sections = [...document.querySelectorAll("main section")];
@@ -29,49 +27,16 @@ themeToggle.addEventListener("click", () => {
   syncThemeColor();
 });
 
-let activeNav = navItems.find(link => link.classList.contains("active")) || navItems[0];
-
-function moveNavIndicator(link, instant = false) {
-  if (!link || !mainNav || !navIndicator) return;
-
-  if (instant) navIndicator.style.transition = "none";
-
-  mainNav.style.setProperty("--indicator-x", `${link.offsetLeft}px`);
-  mainNav.style.setProperty("--indicator-width", `${link.offsetWidth}px`);
-
-  navItems.forEach(item => {
-    item.classList.toggle("indicator-current", item === link);
-  });
-
-  if (instant) {
-    requestAnimationFrame(() => {
-      navIndicator.style.transition = "";
-    });
-  }
-}
-
 function setActiveNav(link) {
   if (!link) return;
-  activeNav = link;
 
   navItems.forEach(item => {
     item.classList.toggle("active", item === link);
   });
-
-  moveNavIndicator(link);
 }
 
 navItems.forEach(link => {
-  link.addEventListener("mouseenter", () => moveNavIndicator(link));
-  link.addEventListener("focus", () => moveNavIndicator(link));
-  link.addEventListener("click", () => {
-    setActiveNav(link);
-  });
-});
-
-mainNav.addEventListener("mouseleave", () => moveNavIndicator(activeNav));
-mainNav.addEventListener("focusout", event => {
-  if (!mainNav.contains(event.relatedTarget)) moveNavIndicator(activeNav);
+  link.addEventListener("click", () => setActiveNav(link));
 });
 
 const sectionObserver = new IntersectionObserver(
@@ -137,7 +102,6 @@ function requestPortraitUpdate() {
 
 window.addEventListener("scroll", requestPortraitUpdate, { passive: true });
 window.addEventListener("resize", () => {
-  moveNavIndicator(activeNav, true);
   requestPortraitUpdate();
 });
 
@@ -156,6 +120,5 @@ if (currentYear) {
 }
 
 requestAnimationFrame(() => {
-  moveNavIndicator(activeNav, true);
   requestPortraitUpdate();
 });
