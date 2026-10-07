@@ -39,6 +39,10 @@ function moveNavIndicator(link, instant = false) {
   mainNav.style.setProperty("--indicator-x", `${link.offsetLeft}px`);
   mainNav.style.setProperty("--indicator-width", `${link.offsetWidth}px`);
 
+  navItems.forEach(item => {
+    item.classList.toggle("indicator-current", item === link);
+  });
+
   if (instant) {
     requestAnimationFrame(() => {
       navIndicator.style.transition = "";
@@ -61,8 +65,7 @@ navItems.forEach(link => {
   link.addEventListener("mouseenter", () => moveNavIndicator(link));
   link.addEventListener("focus", () => moveNavIndicator(link));
   link.addEventListener("click", () => {
-    activeNav = link;
-    moveNavIndicator(link);
+    setActiveNav(link);
   });
 });
 

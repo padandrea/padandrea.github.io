@@ -296,7 +296,7 @@ html[data-theme="dark"] .sun-icon {
   color: var(--text);
 }
 
-.nav-link.active {
+.nav-link.indicator-current {
   color: #ffffff;
 }
 
