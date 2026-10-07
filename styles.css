@@ -414,29 +414,12 @@ html[data-theme="dark"] .hero-dark {
 }
 
 .intro-card {
-  padding: clamp(46px, 6vw, 62px) clamp(28px, 5vw, 52px) clamp(28px, 5vw, 52px);
+  padding: clamp(28px, 5vw, 52px);
   border-radius: 30px;
 }
 
-.card-float-label {
-  position: absolute;
-  top: 18px;
-  left: 22px;
-  min-height: 30px;
-  display: inline-flex;
-  align-items: center;
-  padding: 0 12px;
-  border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--glass-border));
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--glass-bg) 78%, transparent);
-  -webkit-backdrop-filter: blur(18px) saturate(155%);
-  backdrop-filter: blur(18px) saturate(155%);
-  color: var(--accent);
-  font-size: .72rem;
-  font-weight: 820;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  box-shadow: 0 8px 24px rgba(31,45,73,.08);
+.intro-card > .eyebrow {
+  margin: 0 0 16px;
 }
 
 .intro-card h2,
@@ -451,7 +434,7 @@ html[data-theme="dark"] .hero-dark {
   font-size: clamp(2.25rem, 5vw, 4.3rem);
 }
 
-.intro-card p:not(.section-kicker) {
+.intro-card p:not(.section-kicker):not(.eyebrow) {
   max-width: 760px;
   margin: 22px 0 0;
   color: var(--muted);
@@ -827,12 +810,7 @@ html.motion-ready .reveal-target.revealed {
   }
 
   .intro-card {
-    padding: 48px 22px 26px;
-  }
-
-  .card-float-label {
-    top: 14px;
-    left: 16px;
+    padding: 26px 22px;
   }
 
   .intro-card h2 {
