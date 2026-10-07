@@ -1,5 +1,6 @@
 const root = document.documentElement;
 const themeToggle = document.querySelector(".theme-toggle");
+const portrait = document.querySelector(".portrait");
 const navItems = [...document.querySelectorAll(".main-nav a")];
 const sections = [...document.querySelectorAll("main section")];
 
@@ -15,12 +16,23 @@ function syncThemeColor() {
   document.querySelector('meta[name="theme-color"]').setAttribute("content", bg);
 }
 
+function syncThemeAssets() {
+  const isDark = root.dataset.theme === "dark";
+  const nextSrc = isDark ? portrait.dataset.darkSrc : portrait.dataset.lightSrc;
+
+  if (nextSrc && portrait.getAttribute("src") !== nextSrc) {
+    portrait.src = nextSrc;
+  }
+}
+
 syncThemeColor();
+syncThemeAssets();
 
 themeToggle.addEventListener("click", () => {
   root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
   localStorage.setItem("theme", root.dataset.theme);
   syncThemeColor();
+  syncThemeAssets();
 });
 
 const observer = new IntersectionObserver(

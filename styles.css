@@ -7,6 +7,7 @@
   --accent: #3766dd;
   --accent-soft: #edf2ff;
   --content: 760px;
+  --hero-image: url("assets/images/theme/hero_light.png");
 }
 
 html[data-theme="dark"] {
@@ -17,6 +18,7 @@ html[data-theme="dark"] {
   --line: #2c3038;
   --accent: #7da1ff;
   --accent-soft: #202b49;
+  --hero-image: url("assets/images/theme/hero_dark.png");
 }
 
 * {
@@ -50,10 +52,7 @@ a {
 .cover-image {
   width: 100%;
   height: 230px;
-  background:
-    linear-gradient(rgba(4, 18, 31, .06), rgba(4, 18, 31, .10)),
-    url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2000&q=86")
-    center 46% / cover no-repeat;
+  background: var(--hero-image) center center / cover no-repeat;
 }
 
 .portrait-ring {
