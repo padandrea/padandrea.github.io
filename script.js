@@ -4,7 +4,6 @@ const dockLinks = [...document.querySelectorAll(".dock-link")];
 const sections = [...document.querySelectorAll("main .section")];
 const revealTargets = [...document.querySelectorAll(".reveal-target")];
 const interactiveCards = [...document.querySelectorAll(".interactive-card")];
-const scrollProgress = document.querySelector(".scroll-progress span");
 const heroArt = document.querySelector(".hero-art");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
@@ -98,10 +97,6 @@ interactiveCards.forEach(card => {
 let ticking = false;
 
 function updateScrollEffects() {
-  const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-  const progress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
-  scrollProgress.style.transform = `scaleX(${progress})`;
-
   if (!reduceMotion.matches && heroArt) {
     // Start the panorama as soon as the page starts scrolling, including compact layouts.
     // Use a long travel distance so all four planets reveal gradually rather than snapping by.
