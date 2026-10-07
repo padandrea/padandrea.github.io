@@ -103,18 +103,16 @@ function updateScrollEffects() {
   scrollProgress.style.transform = `scaleX(${progress})`;
 
   if (!reduceMotion.matches && heroArt) {
-    const heroTop = heroArt.getBoundingClientRect().top + window.scrollY;
-    const panStart = Math.max(heroTop - 24, 0);
-    const panDistance = Math.max(heroArt.offsetHeight * 0.58, 220);
-    const panProgress = Math.min(
-      Math.max((window.scrollY - panStart) / panDistance, 0),
-      1
-    );
+    // Start the panorama as soon as the page starts scrolling, including compact layouts.
+    // Use a long travel distance so all four planets reveal gradually rather than snapping by.
+    const panDistance = Math.max(window.innerHeight * 1.65, heroArt.offsetHeight * 2.5, 1200);
+    const panProgress = Math.min(Math.max(window.scrollY / panDistance, 0), 1);
 
+    // Smoothstep easing: gentle acceleration at the beginning and deceleration at the end.
     const easedPan = panProgress * panProgress * (3 - 2 * panProgress);
-    const heroX = 12 + (76 * easedPan);
-    const heroShift = 10 * easedPan;
-    const heroScale = 1 + (0.014 * easedPan);
+    const heroX = 8 + (84 * easedPan);
+    const heroShift = 8 * easedPan;
+    const heroScale = 1 + (0.010 * easedPan);
 
     root.style.setProperty("--hero-x", `${heroX.toFixed(2)}%`);
     root.style.setProperty("--hero-y", `${heroShift.toFixed(2)}px`);
