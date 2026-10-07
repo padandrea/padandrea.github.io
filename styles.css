@@ -10,6 +10,7 @@
   --glass-bg: rgba(255,255,255,.60);
   --glass-border: rgba(255,255,255,.76);
   --glass-shadow: 0 20px 60px rgba(31,45,73,.10);
+  --hero-x: 12%;
   --hero-y: 0px;
   --hero-scale: 1;
 }
@@ -330,14 +331,14 @@ html[data-theme="dark"] .sun-icon {
 .hero-layer {
   position: absolute;
   inset: -18px;
-  background-position: center;
+  background-position: var(--hero-x) center;
   background-size: cover;
   background-repeat: no-repeat;
   transform: translate3d(0, var(--hero-y), 0) scale(var(--hero-scale));
   transition:
     opacity .48s cubic-bezier(.2,.7,.2,1),
     transform .12s linear;
-  will-change: transform;
+  will-change: transform, background-position;
 }
 
 .hero-light {

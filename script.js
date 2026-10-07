@@ -5,6 +5,7 @@ const sections = [...document.querySelectorAll("main .section")];
 const revealTargets = [...document.querySelectorAll(".reveal-target")];
 const interactiveCards = [...document.querySelectorAll(".interactive-card")];
 const scrollProgress = document.querySelector(".scroll-progress span");
+const heroArt = document.querySelector(".hero-art");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
 
@@ -101,10 +102,22 @@ function updateScrollEffects() {
   const progress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
   scrollProgress.style.transform = `scaleX(${progress})`;
 
-  if (!reduceMotion.matches) {
-    const heroShift = Math.min(window.scrollY * 0.035, 18);
-    const heroScale = 1 + Math.min(window.scrollY / 18000, 0.018);
-    root.style.setProperty("--hero-y", `${heroShift}px`);
+  if (!reduceMotion.matches && heroArt) {
+    const heroTop = heroArt.getBoundingClientRect().top + window.scrollY;
+    const panStart = Math.max(heroTop - 24, 0);
+    const panDistance = Math.max(heroArt.offsetHeight * 0.58, 220);
+    const panProgress = Math.min(
+      Math.max((window.scrollY - panStart) / panDistance, 0),
+      1
+    );
+
+    const easedPan = panProgress * panProgress * (3 - 2 * panProgress);
+    const heroX = 12 + (76 * easedPan);
+    const heroShift = 10 * easedPan;
+    const heroScale = 1 + (0.014 * easedPan);
+
+    root.style.setProperty("--hero-x", `${heroX.toFixed(2)}%`);
+    root.style.setProperty("--hero-y", `${heroShift.toFixed(2)}px`);
     root.style.setProperty("--hero-scale", heroScale.toFixed(4));
   }
 
@@ -122,6 +135,7 @@ window.addEventListener("resize", requestScrollUpdate);
 
 reduceMotion.addEventListener("change", event => {
   if (event.matches) {
+    root.style.setProperty("--hero-x", "50%");
     root.style.setProperty("--hero-y", "0px");
     root.style.setProperty("--hero-scale", "1");
   }
