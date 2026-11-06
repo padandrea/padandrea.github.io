@@ -10,7 +10,7 @@
   --glass-bg: rgba(255,255,255,.60);
   --glass-border: rgba(255,255,255,.76);
   --glass-shadow: 0 20px 60px rgba(31,45,73,.10);
-  --hero-x: 12%;
+  --hero-x: 0%;
   --hero-y: 0px;
   --hero-scale: 1;
 }
@@ -317,11 +317,8 @@ html[data-theme="dark"] .sun-icon {
   background-size: cover;
   background-repeat: no-repeat;
   transform: translate3d(0, var(--hero-y), 0) scale(var(--hero-scale));
-  transition:
-    opacity .48s cubic-bezier(.2,.7,.2,1),
-    background-position .26s cubic-bezier(.22,.61,.36,1),
-    transform .26s cubic-bezier(.22,.61,.36,1);
-  will-change: transform, background-position;
+  transition: opacity .48s cubic-bezier(.2,.7,.2,1);
+  will-change: transform;
 }
 
 .hero-light {
@@ -617,7 +614,9 @@ html[data-theme="dark"] .hero-dark {
   left: 50%;
   bottom: 22px;
   z-index: 50;
-  transform: translateX(-50%);
+  transform: translate3d(-50%, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform;
   display: flex;
   align-items: center;
   gap: 4px;
