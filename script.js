@@ -5,6 +5,7 @@ const sections = [...document.querySelectorAll("main .section")];
 const revealTargets = [...document.querySelectorAll(".reveal-target")];
 const interactiveCards = [...document.querySelectorAll(".interactive-card")];
 const heroArt = document.querySelector(".hero-art");
+const floatingDock = document.querySelector(".floating-dock");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
 
@@ -89,6 +90,26 @@ interactiveCards.forEach(card => {
     card.style.setProperty("--my", `${event.clientY - rect.top}px`);
   });
 });
+
+// The dock's reflections follow a precise pointer, without moving the dock or
+// its links. The inactive state stays still for touch and reduced-motion users.
+if (floatingDock) {
+  floatingDock.addEventListener("pointermove", event => {
+    if (reduceMotion.matches || event.pointerType !== "mouse") return;
+
+    const rect = floatingDock.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, (event.clientX - rect.left) / rect.width * 100));
+    const y = Math.max(0, Math.min(100, (event.clientY - rect.top) / rect.height * 100));
+
+    floatingDock.style.setProperty("--dock-shine-x", `${x.toFixed(1)}%`);
+    floatingDock.style.setProperty("--dock-shine-y", `${y.toFixed(1)}%`);
+  });
+
+  floatingDock.addEventListener("pointerleave", () => {
+    floatingDock.style.removeProperty("--dock-shine-x");
+    floatingDock.style.removeProperty("--dock-shine-y");
+  });
+}
 
 let ticking = false;
 
