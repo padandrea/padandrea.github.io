@@ -33,34 +33,30 @@ systemTheme.addEventListener("change", event => {
   syncThemeUI();
 });
 
+let activeDockId = null;
+
 function setActiveDock(sectionId) {
+  if (sectionId === activeDockId) return;
+  activeDockId = sectionId;
+
   dockLinks.forEach(link => {
     link.classList.toggle("active", link.getAttribute("href") === "#" + sectionId);
   });
 }
 
-dockLinks.forEach(link => {
-  link.addEventListener("click", () => {
-    const id = link.getAttribute("href").slice(1);
-    setActiveDock(id);
-  });
-});
+// Use one fixed viewport reference for every section, rather than comparing
+// individual IntersectionObserver entry batches (which can arrive out of order).
+function updateActiveDock() {
+  const activationY = window.innerHeight * 0.42;
+  let activeSection = sections[0];
 
-const sectionObserver = new IntersectionObserver(
-  entries => {
-    const visible = entries
-      .filter(entry => entry.isIntersecting)
-      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-    if (visible) setActiveDock(visible.target.id);
-  },
-  {
-    rootMargin: "-18% 0px -58% 0px",
-    threshold: [0.05, 0.2, 0.45]
+  for (const section of sections) {
+    if (section.getBoundingClientRect().top > activationY) break;
+    activeSection = section;
   }
-);
 
-sections.forEach(section => sectionObserver.observe(section));
+  if (activeSection) setActiveDock(activeSection.id);
+}
 
 if (!reduceMotion.matches) {
   root.classList.add("motion-ready");
@@ -97,17 +93,18 @@ interactiveCards.forEach(card => {
 let ticking = false;
 
 function updateScrollEffects() {
-  if (!reduceMotion.matches && heroArt) {
-    // Start the panorama as soon as the page starts scrolling, including compact layouts.
-    // Use a long travel distance so all four planets reveal gradually rather than snapping by.
-    const panDistance = Math.max(window.innerHeight * 1.65, heroArt.offsetHeight * 2.5, 1200);
-    const panProgress = Math.min(Math.max(window.scrollY / panDistance, 0), 1);
+  updateActiveDock();
 
-    // Smoothstep easing: gentle acceleration at the beginning and deceleration at the end.
-    const easedPan = panProgress * panProgress * (3 - 2 * panProgress);
-    const heroX = 8 + (84 * easedPan);
-    const heroShift = 8 * easedPan;
-    const heroScale = 1 + (0.010 * easedPan);
+  if (!reduceMotion.matches && heroArt) {
+    // Finish the full 0%-100% panorama while the hero is still on screen.
+    // Including the hero's page offset also accommodates compact layouts.
+    const heroRect = heroArt.getBoundingClientRect();
+    const heroTop = heroRect.top + window.scrollY;
+    const panEndScroll = Math.max(1, heroTop + heroRect.height * 0.55);
+    const panProgress = Math.min(Math.max(window.scrollY / panEndScroll, 0), 1);
+    const heroX = 100 * panProgress;
+    const heroShift = 8 * panProgress;
+    const heroScale = 1 + (0.010 * panProgress);
 
     root.style.setProperty("--hero-x", `${heroX.toFixed(2)}%`);
     root.style.setProperty("--hero-y", `${heroShift.toFixed(2)}px`);
@@ -126,12 +123,16 @@ function requestScrollUpdate() {
 window.addEventListener("scroll", requestScrollUpdate, { passive: true });
 window.addEventListener("resize", requestScrollUpdate);
 
+function resetHeroMotion() {
+  root.style.setProperty("--hero-x", "50%");
+  root.style.setProperty("--hero-y", "0px");
+  root.style.setProperty("--hero-scale", "1");
+}
+
+if (reduceMotion.matches) resetHeroMotion();
+
 reduceMotion.addEventListener("change", event => {
-  if (event.matches) {
-    root.style.setProperty("--hero-x", "50%");
-    root.style.setProperty("--hero-y", "0px");
-    root.style.setProperty("--hero-scale", "1");
-  }
+  if (event.matches) resetHeroMotion();
   requestScrollUpdate();
 });
 
