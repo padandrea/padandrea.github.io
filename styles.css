@@ -610,69 +610,104 @@ html[data-theme="dark"] .hero-dark {
 }
 
 .floating-dock {
+  --dock-shine-x: 24%;
+  --dock-shine-y: -30%;
   position: fixed;
   left: 50%;
   bottom: 22px;
   z-index: 50;
   transform: translate3d(-50%, 0, 0);
   backface-visibility: hidden;
-  will-change: transform;
   display: flex;
   align-items: center;
   gap: 4px;
   padding: 6px;
-  border: 1px solid rgba(255,255,255,.58);
+  border: 1px solid rgba(255,255,255,.62);
   border-radius: 999px;
   overflow: hidden;
   isolation: isolate;
-  background: rgba(248,250,253,.24);
+  background:
+    linear-gradient(150deg, rgba(255,255,255,.26), rgba(255,255,255,.035) 48%, rgba(142,185,255,.09)),
+    rgba(242,248,255,.08);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.94),
-    inset 0 -1px 0 rgba(255,255,255,.18),
-    inset 1px 0 0 rgba(160,205,255,.12),
-    inset -1px 0 0 rgba(255,170,225,.08);
-  -webkit-backdrop-filter: blur(28px) saturate(210%) brightness(1.08) contrast(1.03);
-  backdrop-filter: blur(28px) saturate(210%) brightness(1.08) contrast(1.03);
+    0 14px 40px rgba(28,43,75,.15),
+    0 3px 10px rgba(29,45,75,.09),
+    inset 0 1px 1px rgba(255,255,255,.90),
+    inset 0 -2px 2px rgba(73,105,153,.15);
+  -webkit-backdrop-filter: blur(17px) saturate(175%) brightness(1.06);
+  backdrop-filter: blur(17px) saturate(175%) brightness(1.06);
 }
 
+/* Broad, movable specular highlight, with a quieter reflected lower edge. */
 .floating-dock::before {
   content: "";
   position: absolute;
-  inset: 1px;
+  inset: 0;
   z-index: 0;
-  pointer-events: none;
   border-radius: inherit;
+  pointer-events: none;
   background:
-    radial-gradient(120% 90% at 18% 0%, rgba(255,255,255,.46), transparent 48%),
-    radial-gradient(100% 120% at 92% 100%, rgba(185,220,255,.12), transparent 58%),
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,.22) 0%,
-      rgba(255,255,255,.05) 42%,
-      rgba(255,255,255,.015) 72%,
-      rgba(255,255,255,.14) 100%
-    );
+    radial-gradient(ellipse 120px 50px at var(--dock-shine-x) var(--dock-shine-y),
+      rgba(255,255,255,.76), rgba(255,255,255,.20) 36%, transparent 78%),
+    radial-gradient(ellipse 120px 38px at 88% 115%, rgba(120,185,255,.19), transparent 78%),
+    linear-gradient(180deg, rgba(255,255,255,.27), transparent 38%,
+      transparent 68%, rgba(255,255,255,.12));
+}
+
+/* A narrow backdrop-treated rim bends/brightens edges independently of the
+   central blur. This remains a CSS approximation, not native optical refraction. */
+.floating-dock::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 3px;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 150px 65px at var(--dock-shine-x) var(--dock-shine-y),
+      rgba(255,255,255,.94), transparent 90%),
+    linear-gradient(125deg,
+      rgba(255,255,255,.78) 0%, rgba(255,255,255,.12) 28%,
+      rgba(100,158,229,.17) 52%, rgba(255,255,255,.70) 81%,
+      rgba(255,255,255,.38) 100%);
+  -webkit-backdrop-filter: blur(2px) saturate(150%) brightness(1.09);
+  backdrop-filter: blur(2px) saturate(150%) brightness(1.09);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
 }
 
 html[data-theme="dark"] .floating-dock {
-  border-color: rgba(255,255,255,.12);
-  background: rgba(18,22,28,.28);
+  border-color: rgba(232,241,255,.27);
+  background:
+    linear-gradient(150deg, rgba(218,233,255,.13), rgba(85,112,155,.035) 50%, rgba(195,220,255,.08)),
+    rgba(18,26,41,.16);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.16),
-    inset 0 -1px 0 rgba(255,255,255,.035),
-    inset 1px 0 0 rgba(120,170,255,.08),
-    inset -1px 0 0 rgba(255,130,210,.05);
+    0 16px 46px rgba(0,0,0,.40),
+    0 3px 12px rgba(0,0,0,.23),
+    inset 0 1px 1px rgba(255,255,255,.28),
+    inset 0 -2px 2px rgba(0,0,0,.25);
 }
 
 html[data-theme="dark"] .floating-dock::before {
   background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,.11) 0%,
-      rgba(255,255,255,.025) 42%,
-      rgba(255,255,255,.01) 72%,
-      rgba(255,255,255,.06) 100%
-    );
+    radial-gradient(ellipse 130px 50px at var(--dock-shine-x) var(--dock-shine-y),
+      rgba(230,240,255,.30), rgba(160,200,255,.08) 40%, transparent 80%),
+    radial-gradient(ellipse 125px 48px at 90% 115%, rgba(98,151,240,.18), transparent 80%),
+    linear-gradient(180deg, rgba(232,242,255,.11), transparent 42%,
+      transparent 68%, rgba(205,224,255,.04));
+}
+
+html[data-theme="dark"] .floating-dock::after {
+  background:
+    radial-gradient(ellipse 140px 62px at var(--dock-shine-x) var(--dock-shine-y),
+      rgba(235,246,255,.58), transparent 90%),
+    linear-gradient(125deg,
+      rgba(230,241,255,.44), rgba(230,241,255,.055) 30%,
+      rgba(89,152,244,.20) 55%, rgba(235,244,255,.36) 83%,
+      rgba(230,241,255,.15));
 }
 
 .dock-link {
@@ -683,17 +718,15 @@ html[data-theme="dark"] .floating-dock::before {
   align-items: center;
   justify-content: center;
   padding: 0 18px;
+  border: 1px solid transparent; /* Stable width while active section changes. */
   border-radius: 999px;
   color: var(--muted);
   font-size: .9rem;
   font-weight: 760;
   text-decoration: none;
   white-space: nowrap;
-  transition:
-    color .22s ease,
-    background-color .22s ease,
-    transform .22s ease,
-    box-shadow .22s ease;
+  transition: color .22s ease, background-color .22s ease,
+    transform .22s ease, box-shadow .22s ease;
 }
 
 .dock-link:hover,
@@ -702,20 +735,22 @@ html[data-theme="dark"] .floating-dock::before {
   transform: translateY(-1px);
 }
 
+.dock-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+
 .dock-link.active {
-  color: #fff;
+  color: #204b9b;
+  border-color: rgba(255,255,255,.71);
   background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--accent) 92%, white 8%) 0%,
-      var(--accent) 58%,
-      color-mix(in srgb, var(--accent) 92%, black 8%) 100%
-    );
+    radial-gradient(ellipse 120% 95% at 23% -14%, rgba(255,255,255,.87), transparent 70%),
+    linear-gradient(155deg, rgba(255,255,255,.68),
+      rgba(202,224,255,.44) 55%, rgba(175,206,252,.33));
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.30),
-    inset 0 -1px 0 rgba(0,0,0,.08),
-    inset 1px 0 0 rgba(180,220,255,.14),
-    inset -1px 0 0 rgba(255,170,225,.10);
+    0 3px 10px rgba(45,82,134,.16),
+    inset 0 1px 1px rgba(255,255,255,.90),
+    inset 0 -1px 2px rgba(59,105,165,.17);
 }
 
 .dock-link.active::after {
@@ -725,10 +760,53 @@ html[data-theme="dark"] .floating-dock::before {
   border-radius: inherit;
   pointer-events: none;
   background:
-    radial-gradient(120% 80% at 28% 0%, rgba(255,255,255,.22), transparent 50%),
-    linear-gradient(90deg, rgba(255,255,255,.04), transparent 35%, rgba(255,255,255,.03));
-  mix-blend-mode: screen;
-  opacity: .85;
+    radial-gradient(ellipse 80% 70% at 24% -12%, rgba(255,255,255,.52), transparent 82%),
+    linear-gradient(180deg, rgba(255,255,255,.22), transparent 46%);
+}
+
+html[data-theme="dark"] .dock-link.active {
+  color: #f3f7ff;
+  border-color: rgba(215,234,255,.30);
+  background:
+    radial-gradient(ellipse 120% 95% at 23% -14%, rgba(232,243,255,.24), transparent 70%),
+    linear-gradient(155deg, rgba(170,201,250,.27),
+      rgba(88,126,195,.24) 55%, rgba(144,174,229,.13));
+  box-shadow:
+    0 3px 12px rgba(0,0,0,.20),
+    inset 0 1px 1px rgba(241,248,255,.38),
+    inset 0 -1px 2px rgba(0,0,0,.14);
+}
+
+html[data-theme="dark"] .dock-link.active::after {
+  background:
+    radial-gradient(ellipse 80% 70% at 24% -12%, rgba(255,255,255,.16), transparent 82%),
+    linear-gradient(180deg, rgba(255,255,255,.07), transparent 46%);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .floating-dock {
+    background: var(--surface-strong);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .floating-dock {
+    background: Canvas;
+    border-color: CanvasText;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .floating-dock::before,
+  .floating-dock::after {
+    display: none;
+  }
+  .dock-link.active {
+    color: HighlightText;
+    background: Highlight;
+    border-color: Highlight;
+  }
 }
 
 html.motion-ready .reveal-target {
