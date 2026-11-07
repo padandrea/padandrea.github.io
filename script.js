@@ -91,6 +91,15 @@ interactiveCards.forEach(card => {
   });
 });
 
+// SVG displacement on live backdrops works in Chromium; Safari/WebKit and
+// Firefox use the layered CSS lens instead, without a broken SVG filter.
+const chromiumEngine = /(?:Chrome|Chromium|Edg)\//.test(navigator.userAgent);
+const svgBackdropSupported = typeof CSS !== "undefined"
+  && CSS.supports("backdrop-filter", "url('#dock-refraction')");
+if (floatingDock && chromiumEngine && svgBackdropSupported) {
+  floatingDock.classList.add("has-liquid-refraction");
+}
+
 // The dock's reflections follow a precise pointer, without moving the dock or
 // its links. The inactive state stays still for touch and reduced-motion users.
 if (floatingDock) {

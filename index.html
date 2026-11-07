@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#f3f5f8">
   <title>Pascal S. D'Andrea</title>
   <link rel="stylesheet" href="styles.css?v=20">
+  <link rel="stylesheet" href="liquid-glass.css?v=1">
 </head>
 <body>
   <div class="site-shell" id="top">
@@ -214,12 +215,24 @@
   </div>
 
   <nav class="floating-dock glass-panel" aria-label="Main navigation">
+    <span class="dock-glass-lens" aria-hidden="true"></span>
     <a class="dock-link active" href="#about">About</a>
     <a class="dock-link" href="#research">Research</a>
     <a class="dock-link" href="#publications">Publications</a>
     <a class="dock-link" href="#code">Code</a>
   </nav>
 
-  <script src="script.js?v=12"></script>
+  <!-- SVG refraction is enabled only in browsers with supported backdrop displacement. -->
+  <svg class="liquid-glass-filters" aria-hidden="true" focusable="false" width="0" height="0" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="dock-refraction" x="-15%" y="-30%" width="130%" height="160%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.014 0.065" numOctaves="2" seed="7" result="waves"/>
+        <feGaussianBlur in="waves" stdDeviation="1.6" result="smooth-waves"/>
+        <feDisplacementMap in="SourceGraphic" in2="smooth-waves" scale="15" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <script src="script.js?v=13"></script>
 </body>
 </html>
