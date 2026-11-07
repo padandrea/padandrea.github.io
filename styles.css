@@ -10,9 +10,7 @@
   --glass-bg: rgba(255,255,255,.60);
   --glass-border: rgba(255,255,255,.76);
   --glass-shadow: 0 20px 60px rgba(31,45,73,.10);
-  --hero-x: 0%;
-  --hero-y: 0px;
-  --hero-scale: 1;
+  --hero-pan-x: 0px;
 }
 
 html[data-theme="dark"] {
@@ -36,6 +34,8 @@ html[data-theme="dark"] {
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 32px;
+  /* Ensure a continuous canvas behind Safari's browser controls. */
+  background-color: var(--bg);
 }
 
 body {
@@ -312,11 +312,12 @@ html[data-theme="dark"] .sun-icon {
 
 .hero-layer {
   position: absolute;
-  inset: -18px;
-  background-position: var(--hero-x) center;
+  inset: -18px auto -18px -18px;
+  width: var(--hero-image-width, calc(100% + 36px));
+  background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  transform: translate3d(0, var(--hero-y), 0) scale(var(--hero-scale));
+  transform: translate3d(var(--hero-pan-x), 0, 0);
   transition: opacity .48s cubic-bezier(.2,.7,.2,1);
   will-change: transform;
 }
@@ -1060,7 +1061,8 @@ html.motion-ready .reveal-target.revealed {
   }
 
   .hero-layer {
-    transform: none !important;
+    left: 50%;
+    transform: translate3d(-50%, 0, 0) !important;
   }
 
   html.motion-ready .reveal-target {

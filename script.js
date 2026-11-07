@@ -5,6 +5,33 @@ const sections = [...document.querySelectorAll("main .section")];
 const revealTargets = [...document.querySelectorAll(".reveal-target")];
 const interactiveCards = [...document.querySelectorAll(".interactive-card")];
 const heroArt = document.querySelector(".hero-art");
+
+// Resolve panorama geometry only on load and resize. Scroll updates a transform,
+// avoiding expensive repaints from changing CSS background-position.
+let heroImageAspect = 0;
+let heroPan = { endScroll: 1, travel: 0 };
+
+function measureHeroPan() {
+  if (!heroArt) return;
+  const rect = heroArt.getBoundingClientRect();
+  const viewportWidth = rect.width + 36;
+  const imageWidth = Math.max(viewportWidth, heroImageAspect * (rect.height + 36));
+  heroPan = {
+    endScroll: Math.max(1, rect.top + window.scrollY + rect.height * 0.55),
+    travel: Math.max(0, imageWidth - viewportWidth)
+  };
+  heroArt.style.setProperty("--hero-image-width", `${imageWidth.toFixed(1)}px`);
+}
+
+if (heroArt) {
+  const panorama = new Image();
+  panorama.addEventListener("load", () => {
+    heroImageAspect = panorama.naturalWidth / panorama.naturalHeight;
+    measureHeroPan();
+    requestScrollUpdate();
+  });
+  panorama.src = "assets/images/theme/hero_light.png";
+}
 const floatingDock = document.querySelector(".floating-dock");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
@@ -91,15 +118,6 @@ interactiveCards.forEach(card => {
   });
 });
 
-// SVG displacement on live backdrops works in Chromium; Safari/WebKit and
-// Firefox use the layered CSS lens instead, without a broken SVG filter.
-const chromiumEngine = /(?:Chrome|Chromium|Edg)\//.test(navigator.userAgent);
-const svgBackdropSupported = typeof CSS !== "undefined"
-  && CSS.supports("backdrop-filter", "url('#dock-refraction')");
-if (floatingDock && chromiumEngine && svgBackdropSupported) {
-  floatingDock.classList.add("has-liquid-refraction");
-}
-
 // The dock's reflections follow a precise pointer, without moving the dock or
 // its links. The inactive state stays still for touch and reduced-motion users.
 if (floatingDock) {
@@ -124,23 +142,10 @@ let ticking = false;
 
 function updateScrollEffects() {
   updateActiveDock();
-
   if (!reduceMotion.matches && heroArt) {
-    // Finish the full 0%-100% panorama while the hero is still on screen.
-    // Including the hero's page offset also accommodates compact layouts.
-    const heroRect = heroArt.getBoundingClientRect();
-    const heroTop = heroRect.top + window.scrollY;
-    const panEndScroll = Math.max(1, heroTop + heroRect.height * 0.55);
-    const panProgress = Math.min(Math.max(window.scrollY / panEndScroll, 0), 1);
-    const heroX = 100 * panProgress;
-    const heroShift = 8 * panProgress;
-    const heroScale = 1 + (0.010 * panProgress);
-
-    root.style.setProperty("--hero-x", `${heroX.toFixed(2)}%`);
-    root.style.setProperty("--hero-y", `${heroShift.toFixed(2)}px`);
-    root.style.setProperty("--hero-scale", heroScale.toFixed(4));
+    const progress = Math.min(Math.max(window.scrollY / heroPan.endScroll, 0), 1);
+    heroArt.style.setProperty("--hero-pan-x", `${(-heroPan.travel * progress).toFixed(2)}px`);
   }
-
   ticking = false;
 }
 
@@ -151,12 +156,17 @@ function requestScrollUpdate() {
 }
 
 window.addEventListener("scroll", requestScrollUpdate, { passive: true });
-window.addEventListener("resize", requestScrollUpdate);
+window.addEventListener("resize", () => {
+  measureHeroPan();
+  requestScrollUpdate();
+});
+window.addEventListener("load", () => {
+  measureHeroPan();
+  requestScrollUpdate();
+});
 
 function resetHeroMotion() {
-  root.style.setProperty("--hero-x", "50%");
-  root.style.setProperty("--hero-y", "0px");
-  root.style.setProperty("--hero-scale", "1");
+  if (heroArt) heroArt.style.removeProperty("--hero-pan-x");
 }
 
 if (reduceMotion.matches) resetHeroMotion();
@@ -171,4 +181,5 @@ if (currentYear) {
   currentYear.textContent = new Date().getFullYear();
 }
 
+measureHeroPan();
 requestAnimationFrame(updateScrollEffects);
