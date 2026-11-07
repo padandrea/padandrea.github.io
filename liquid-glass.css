@@ -1,71 +1,166 @@
-/* Unified translucent navigation, deliberately without an outer white rim. */
+/* Refractive navigation lens. The bar remains borderless and translucent. */
 .floating-dock,
 html[data-theme="dark"] .floating-dock {
   border: 0;
-  background: rgba(165,195,235,.13);
+  background: rgba(200, 222, 249, .075);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-  box-shadow: 0 7px 17px rgba(25,47,85,.10);
+  box-shadow: 0 9px 22px rgba(30,54,89,.11);
 }
 
 .dock-glass-lens {
   position: absolute;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(147,192,255,.04));
+  background: rgba(219,233,255,.11);
+  -webkit-backdrop-filter: blur(3px) saturate(155%);
+  backdrop-filter: blur(3px) saturate(155%);
+}
+
+.dock-glass-lens.is-refracting {
+  background: transparent;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
 
-.floating-dock::before,
-.floating-dock::after {
-  display: none;
-  content: none;
+/* The mirrored page is clipped to the exact navigation shape and refracted
+   with an SVG displacement map: text really bends near the rounded edges. */
+.dock-glass-refracted {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  filter: url("#dock-true-refraction");
+  -webkit-filter: url("#dock-true-refraction");
 }
 
-.dock-link {
+.dock-glass-scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  pointer-events: none;
+  will-change: transform;
+  transform: translate3d(
+    calc(-1 * var(--lens-left, 0px)),
+    calc(-1 * var(--lens-top, 0px)),
+    0
+  );
+  background:
+    radial-gradient(circle at 12% 8%, rgba(92,126,214,.08), transparent 28rem),
+    radial-gradient(circle at 92% 36%, rgba(103,157,214,.07), transparent 32rem),
+    var(--bg);
+}
+
+@keyframes refracted-page-scroll {
+  from {
+    transform: translate3d(
+      calc(-1 * var(--lens-left)),
+      calc(-1 * var(--lens-top)),
+      0
+    );
+  }
+  to {
+    transform: translate3d(
+      calc(-1 * var(--lens-left)),
+      calc(-1 * var(--lens-top) - var(--lens-max-scroll)),
+      0
+    );
+  }
+}
+
+@supports (animation-timeline: scroll(root block)) {
+  .dock-glass-scene.use-native-scroll {
+    animation: refracted-page-scroll 1s linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+/* Mirroring is decorative, so it never receives focus or input. */
+.dock-glass-scene .site-shell {
+  pointer-events: none;
+}
+.dock-glass-scene .reveal-target,
+.dock-glass-scene .reveal-target.revealed {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+.dock-glass-scene .glass-panel {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.dock-glass-scene .identity-panel {
+  position: relative !important;
+  top: auto !important;
+}
+
+/* Very thin specular meniscus: the edge remains colorless, not white-rimmed. */
+.floating-dock::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 0;
   z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.20), transparent 27%,
+      transparent 72%, rgba(104,157,222,.10)),
+    radial-gradient(ellipse 135px 45px at var(--dock-shine-x, 24%)
+      var(--dock-shine-y, -30%), rgba(255,255,255,.22), transparent 77%);
+}
+.floating-dock::after { content: none; display: none; }
+
+.dock-link {
+  z-index: 2;
   border: 0;
   color: var(--text);
 }
-
-/* The active tab remains blue, but with a translucent glass finish. */
 .dock-link.active {
   color: #fff;
   border: 0;
-  background: linear-gradient(155deg, rgba(63,135,252,.76), rgba(33,91,215,.83));
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  box-shadow: 0 3px 8px rgba(28,81,186,.17), inset 0 1px 1px rgba(255,255,255,.27);
+  background: linear-gradient(155deg, rgba(69,143,255,.76),
+    rgba(31,87,211,.82));
+  box-shadow: 0 3px 10px rgba(32,80,171,.18),
+    inset 0 1px 1px rgba(255,255,255,.28);
 }
-
 .dock-link.active::after { display: none; content: none; }
 
 html[data-theme="dark"] .floating-dock {
-  background: rgba(66,88,128,.22);
-  box-shadow: 0 7px 18px rgba(0,0,0,.20);
+  background: rgba(33,52,80,.12);
+  box-shadow: 0 9px 25px rgba(0,0,0,.22);
 }
-
 html[data-theme="dark"] .dock-glass-lens {
-  background: linear-gradient(135deg, rgba(225,238,255,.055), rgba(68,118,192,.025));
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+  background: rgba(33,52,80,.16);
 }
-
+html[data-theme="dark"] .dock-glass-lens.is-refracting {
+  background: transparent;
+}
+html[data-theme="dark"] .floating-dock::before {
+  background: linear-gradient(180deg, rgba(223,240,255,.13),
+    transparent 30%, transparent 74%, rgba(90,146,233,.10));
+}
 html[data-theme="dark"] .dock-link.active {
   color: #fff;
-  border: 0;
-  background: linear-gradient(155deg, rgba(69,140,250,.80), rgba(38,94,218,.86));
-  box-shadow: 0 3px 9px rgba(7,32,91,.22), inset 0 1px 1px rgba(255,255,255,.22);
+  background: linear-gradient(155deg, rgba(74,148,255,.82),
+    rgba(35,92,213,.88));
+  box-shadow: 0 3px 11px rgba(4,24,71,.25),
+    inset 0 1px 1px rgba(250,252,255,.23);
 }
 
 @media (prefers-reduced-transparency: reduce) {
   .floating-dock,
-  html[data-theme="dark"] .floating-dock { background: var(--surface-strong); }
-  .dock-glass-lens { display: none; }
-  .dock-link.active { background: #2865dc; color: #fff; }
+  html[data-theme="dark"] .floating-dock {
+    background: var(--surface-strong);
+  }
+  .dock-glass-lens,
+  .floating-dock::before { display: none !important; }
+  .dock-link.active { color: #fff; background: #2865dc; }
 }
 
 @media (forced-colors: active) {
@@ -74,11 +169,9 @@ html[data-theme="dark"] .dock-link.active {
     background: Canvas;
     border: 1px solid CanvasText;
   }
-  .dock-glass-lens { display: none; }
-  .dock-link.active,
-  html[data-theme="dark"] .dock-link.active {
+  .dock-glass-lens, .floating-dock::before { display: none !important; }
+  .dock-link.active, html[data-theme="dark"] .dock-link.active {
     color: HighlightText;
     background: Highlight;
-    border: 0;
   }
 }
