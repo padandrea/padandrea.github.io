@@ -145,6 +145,13 @@
   // If canvas/SVG image creation fails, retain the standard CSS glass fallback.
   if (image.hasAttribute("href")) lens.classList.add("is-refracting");
   if (!nativeTimeline) {
+    // Preserve the correct backdrop even when the page opens at #research.
+    const syncFallback = () => {
+      const x = parseFloat(scene.style.getPropertyValue("--lens-left")) || 0;
+      const y = parseFloat(scene.style.getPropertyValue("--lens-top")) || 0;
+      scene.style.transform = `translate3d(${-x}px, ${-y - window.scrollY}px, 0)`;
+    };
+    syncFallback();
     let pending = false;
     window.addEventListener("scroll", () => {
       if (pending) return;
