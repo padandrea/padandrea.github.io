@@ -20,7 +20,9 @@ function measureHeroPan() {
     endScroll: Math.max(1, rect.top + window.scrollY + rect.height * 0.55),
     travel: Math.max(0, imageWidth - viewportWidth)
   };
-  heroArt.style.setProperty("--hero-image-width", `${imageWidth.toFixed(1)}px`);
+  root.style.setProperty("--hero-image-width", `${imageWidth.toFixed(1)}px`);
+  root.style.setProperty("--hero-travel", `${heroPan.travel.toFixed(1)}px`);
+  root.style.setProperty("--hero-pan-end", `${heroPan.endScroll.toFixed(1)}px`);
 }
 
 if (heroArt) {
@@ -33,6 +35,9 @@ if (heroArt) {
   panorama.src = "assets/images/theme/hero_light.png";
 }
 const floatingDock = document.querySelector(".floating-dock");
+const cssScrollMotion = window.CSS && CSS.supports("animation-timeline: scroll(root block)")
+  && CSS.supports("animation-range: 0px 300px");
+root.dataset.scrollTimeline = cssScrollMotion ? "native" : "fallback";
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
 
@@ -142,7 +147,9 @@ let ticking = false;
 
 function updateScrollEffects() {
   updateActiveDock();
-  if (!reduceMotion.matches && heroArt) {
+  // Modern Safari and Chromium animate the panorama on their compositor thread.
+  // Only older browsers use this JavaScript transform fallback.
+  if (!cssScrollMotion && !reduceMotion.matches && heroArt) {
     const progress = Math.min(Math.max(window.scrollY / heroPan.endScroll, 0), 1);
     heroArt.style.setProperty("--hero-pan-x", `${(-heroPan.travel * progress).toFixed(2)}px`);
   }
