@@ -142,7 +142,8 @@
   // Activate the optical layer only after the texture and geometry are ready.
   lens.appendChild(surface);
   layout();
-  lens.classList.add("is-refracting");
+  // If canvas/SVG image creation fails, retain the standard CSS glass fallback.
+  if (image.hasAttribute("href")) lens.classList.add("is-refracting");
   if (!nativeTimeline) {
     let pending = false;
     window.addEventListener("scroll", () => {
@@ -154,13 +155,22 @@
       });
     }, { passive: true });
   }
-  window.addEventListener("resize", layout, { passive: true });
-  window.addEventListener("load", layout, { once: true });
+  let geometryPending = false;
+  function scheduleLayout() {
+    if (geometryPending) return;
+    geometryPending = true;
+    requestAnimationFrame(() => {
+      geometryPending = false;
+      layout();
+    });
+  }
+  window.addEventListener("resize", scheduleLayout, { passive: true });
+  window.addEventListener("load", scheduleLayout, { once: true });
   if (window.visualViewport) {
-    window.visualViewport.addEventListener("resize", layout, { passive: true });
+    window.visualViewport.addEventListener("resize", scheduleLayout, { passive: true });
   }
   if (typeof ResizeObserver !== "undefined") {
-    const observer = new ResizeObserver(layout);
+    const observer = new ResizeObserver(scheduleLayout);
     observer.observe(dock);
     observer.observe(page);
   }
