@@ -185,12 +185,12 @@ html[data-theme="dark"] .dock-link.active {
   z-index: 1;
   border-radius: inherit;
   pointer-events: none;
-  background: rgba(245, 249, 255, .30);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(245, 249, 255, .18);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(6px);
 }
 html[data-theme="dark"] .floating-dock .dock-glass-lens.is-refracting::after {
-  background: rgba(35, 46, 66, .30);
+  background: rgba(35, 46, 66, .18);
 }
 @media (prefers-reduced-transparency: reduce), (forced-colors: active) {
   .floating-dock .dock-glass-lens.is-refracting::after { display: none; }
