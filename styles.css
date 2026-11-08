@@ -1075,8 +1075,8 @@ html.motion-ready .reveal-target.revealed {
 /* The planet panorama now runs on the browser's scroll animation timeline.
    Safari 26+ executes this on the compositor thread, avoiding JS-frame jitter. */
 @keyframes panorama-scroll {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(calc(-1 * var(--hero-travel, 0px)), 0, 0); }
+  0% { transform: translate3d(var(--hero-start-offset, 0px), 0, 0); animation-timing-function: cubic-bezier(.45, 0, .55, 1); }
+  100% { transform: translate3d(calc(-1 * var(--hero-travel, 0px)), 0, 0); }
 }
 
 @supports (animation-timeline: scroll(root block)) and (animation-range: 0px 300px) {
