@@ -21,6 +21,7 @@ function measureHeroPan() {
     travel: Math.max(0, imageWidth - viewportWidth)
   };
   root.style.setProperty("--hero-image-width", `${imageWidth.toFixed(1)}px`);
+  root.style.setProperty("--hero-start-offset", `${Math.min(65, heroPan.travel * .25).toFixed(1)}px`);
   root.style.setProperty("--hero-travel", `${heroPan.travel.toFixed(1)}px`);
   root.style.setProperty("--hero-pan-end", `${heroPan.endScroll.toFixed(1)}px`);
 }
@@ -151,7 +152,9 @@ function updateScrollEffects() {
   // Only older browsers use this JavaScript transform fallback.
   if (!cssScrollMotion && !reduceMotion.matches && heroArt) {
     const progress = Math.min(Math.max(window.scrollY / heroPan.endScroll, 0), 1);
-    heroArt.style.setProperty("--hero-pan-x", `${(-heroPan.travel * progress).toFixed(2)}px`);
+    const eased = progress * progress * (3 - 2 * progress);
+    const start = Math.min(65, heroPan.travel * .25);
+    heroArt.style.setProperty("--hero-pan-x", `${(start - (heroPan.travel + start) * eased).toFixed(2)}px`);
   }
   ticking = false;
 }
