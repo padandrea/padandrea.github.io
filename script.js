@@ -21,7 +21,7 @@ function measureHeroPan() {
     travel: Math.max(0, imageWidth - viewportWidth)
   };
   root.style.setProperty("--hero-image-width", `${imageWidth.toFixed(1)}px`);
-  root.style.setProperty("--hero-start-offset", `${Math.min(65, heroPan.travel * .25).toFixed(1)}px`);
+  root.style.setProperty("--hero-start-offset", `${(-heroPan.travel * .45).toFixed(1)}px`);
   root.style.setProperty("--hero-travel", `${heroPan.travel.toFixed(1)}px`);
   root.style.setProperty("--hero-pan-end", `${heroPan.endScroll.toFixed(1)}px`);
 }
