@@ -185,13 +185,20 @@ html[data-theme="dark"] .dock-link.active {
   z-index: 1;
   border-radius: inherit;
   pointer-events: none;
-  background: rgba(245, 249, 255, .18);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(6px);
+  background: rgba(245, 249, 255, .13);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
 }
 html[data-theme="dark"] .floating-dock .dock-glass-lens.is-refracting::after {
-  background: rgba(35, 46, 66, .18);
+  background: rgba(35, 46, 66, .13);
 }
 @media (prefers-reduced-transparency: reduce), (forced-colors: active) {
   .floating-dock .dock-glass-lens.is-refracting::after { display: none; }
+}
+
+/* Delicate white glass rim matching the Current Focus panel. */
+.floating-dock,
+html[data-theme="dark"] .floating-dock {
+  border: 1px solid rgba(255,255,255,.78);
+  box-shadow: 0 9px 22px rgba(30,54,89,.11), inset 0 1px 0 rgba(255,255,255,.55);
 }
