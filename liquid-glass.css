@@ -176,3 +176,22 @@ html[data-theme="dark"] .dock-link.active {
     background: Highlight;
   }
 }
+
+/* Visible frosted finish over the refracted page, including on Safari. */
+.floating-dock .dock-glass-lens.is-refracting::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: rgba(245, 249, 255, .30);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+html[data-theme="dark"] .floating-dock .dock-glass-lens.is-refracting::after {
+  background: rgba(35, 46, 66, .30);
+}
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  .floating-dock .dock-glass-lens.is-refracting::after { display: none; }
+}
