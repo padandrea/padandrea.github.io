@@ -17,11 +17,11 @@ function measureHeroPan() {
   const viewportWidth = rect.width + 36;
   const imageWidth = Math.max(viewportWidth, heroImageAspect * (rect.height + 36));
   heroPan = {
-    endScroll: Math.max(1, rect.top + window.scrollY + rect.height * 0.55),
+    endScroll: Math.max(1, rect.top + window.scrollY + rect.height * 1.5),
     travel: Math.max(0, imageWidth - viewportWidth)
   };
   root.style.setProperty("--hero-image-width", `${imageWidth.toFixed(1)}px`);
-  root.style.setProperty("--hero-start-offset", `${(-heroPan.travel * .45).toFixed(1)}px`);
+  root.style.setProperty("--hero-start-offset", `${(-heroPan.travel * .15).toFixed(1)}px`);
   root.style.setProperty("--hero-travel", `${heroPan.travel.toFixed(1)}px`);
   root.style.setProperty("--hero-pan-end", `${heroPan.endScroll.toFixed(1)}px`);
 }
@@ -153,8 +153,7 @@ function updateScrollEffects() {
   if (!cssScrollMotion && !reduceMotion.matches && heroArt) {
     const progress = Math.min(Math.max(window.scrollY / heroPan.endScroll, 0), 1);
     const eased = progress * progress * (3 - 2 * progress);
-    const start = Math.min(65, heroPan.travel * .25);
-    heroArt.style.setProperty("--hero-pan-x", `${(start - (heroPan.travel + start) * eased).toFixed(2)}px`);
+    heroArt.style.setProperty("--hero-pan-x", `${(-heroPan.travel * (.15 + .85 * eased)).toFixed(2)}px`);
   }
   ticking = false;
 }
