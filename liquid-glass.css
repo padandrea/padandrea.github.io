@@ -21,9 +21,10 @@ html[data-theme="dark"] .floating-dock {
 }
 
 .dock-glass-lens.is-refracting {
-  background: transparent;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+  /* Barely frosted (5% tint); preserve the existing refractive displacement. */
+  background: rgba(219,233,255,.05);
+  -webkit-backdrop-filter: blur(.5px);
+  backdrop-filter: blur(.5px);
 }
 
 /* The mirrored page is clipped to the exact navigation shape and refracted
@@ -139,7 +140,7 @@ html[data-theme="dark"] .dock-glass-lens {
   background: rgba(33,52,80,.16);
 }
 html[data-theme="dark"] .dock-glass-lens.is-refracting {
-  background: transparent;
+  background: rgba(180,205,240,.05);
 }
 html[data-theme="dark"] .floating-dock::before {
   background: linear-gradient(180deg, rgba(223,240,255,.13),
