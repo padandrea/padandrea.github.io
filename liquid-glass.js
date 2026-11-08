@@ -55,7 +55,12 @@
   warp.setAttribute("scale", "35");
   warp.setAttribute("xChannelSelector", "R");
   warp.setAttribute("yChannelSelector", "G");
-  filter.append(image, warp);
+  // Slightly diffuse the refracted copy itself (not just the backdrop below it).
+  const frost = document.createElementNS(svgNS, "feGaussianBlur");
+  frost.setAttribute("in", "refracted");
+  frost.setAttribute("stdDeviation", "1.4");
+  warp.setAttribute("result", "refracted");
+  filter.append(image, warp, frost);
   defs.appendChild(filter);
   svg.appendChild(defs);
   document.body.appendChild(svg);
